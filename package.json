@@ -11,5 +11,11 @@
   "license": "ISC",
   "devDependencies": {
     "@napi-rs/cli": "^2.17.0"
-  }
+  },  "napi": {
+      "name": "sync-server"
+        },
+          "scripts": {
+                "build": "napi build --release",
+                    "build:debug": "napi build"
+                      }
 }
