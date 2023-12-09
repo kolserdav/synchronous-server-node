@@ -31,7 +31,7 @@ where
         let headers = read_headers(&mut client);
         println!("{:?}", headers);
 
-        let result = callback("".to_string())?;
+        let result = callback("{\"tet\":\"tet\"}".to_string())?;
         let length = result.len();
         let res_heads = format!(
             "Content-Type: application/json{CRLF}Content-Length: {length}{CRLF}Server: sync-server{CRLF}"

@@ -4,18 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "napi build --release",
+    "build:debug": "napi build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@napi-rs/cli": "^2.17.0"
-  },  "napi": {
-      "name": "sync-server"
-        },
-          "scripts": {
-                "build": "napi build --release",
-                    "build:debug": "napi build"
-                      }
+    "@napi-rs/cli": "^2.17.0",
+    "@types/node": "^20.10.4"
+  },
+  "napi": {
+    "name": "sync-server"
+  },
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
 }
