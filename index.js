@@ -7,6 +7,8 @@ const path = require("path");
 const pack = require("./package.json");
 const os = require("os");
 
+const RESERVE_CB_NAME = "_sync_server_reserve_cb_name";
+
 function syncServer(cb) {
   const tmpFilePath = path.resolve(os.tmpdir(), `${pack.name}-${v4()}.js`);
   const data = createStringFunc(cb.toString());
@@ -21,41 +23,49 @@ function syncServer(cb) {
       console.error(rr.error);
       return JSON.stringify({ error: "Failed to execute callback", data });
     }
-    console.log(resS);
     if (rr.stderr) {
-      console.warn(rr.stderr.toString());
+      const warnT = rr.stderr.toString();
+      if (!/^\s+$/.test(warnT) && warnT !== "") {
+        console.warn(warnT);
+      }
     }
     const resA = resS.split("\n").filter((item) => item !== "");
+
+    const consoleV = resA.filter((_, i) => i !== resA.length - 1).join("\n");
+    console.log(consoleV);
+
     return resA[resA.length - 1];
   });
 }
 
-function createStringFunc(fn) {
-  let _fn = `${fn}`;
-  const fNameM = fn.match(
-    /(async)* function\s+[a-zA-Z0-9_]+\([a-zA-Z0-9_]+\)\s*{/
-  );
-  if (fNameM) {
-    const fName = fNameM[0];
-    const argM = fName.match(/\([a-zA-Z0-9_]\)/);
-    const defineArg = argM
-      ? `const ${argM[0].replace(/[()]+/g, "")} = JSON.parse(process.argv[2]);`
-      : "";
-    _fn = `${fn.replace(
-      fName,
-      `async function cb() {\n${defineArg}\n`
-    )}\ncb();`;
-  }
+function createStringFunc(cb) {
+  let cbStr = cb.toString();
+  const propM = cbStr.match(/\([a-zA-Z0-9_]*\)/);
+  const prop = propM ? propM[0].replace(/[\(\)]+/g, "") : "";
+  const body = cbStr.substring(cbStr.indexOf("{") + 1, cbStr.lastIndexOf("}"));
+  cbStr = `async function cb(${prop}) {\n${body}\n}`;
 
-  return _fn;
+  async function _sync_server_reserve_cb_name() {
+    const props = "";
+    const res = await cb(props);
+    console.log(res);
+  }
+  const resCbStr = _sync_server_reserve_cb_name
+    .toString()
+    .replace(
+      `async function ${RESERVE_CB_NAME}() {`,
+      `async function ${RESERVE_CB_NAME}() {\n\t${cbStr}\n`
+    )
+    .replace('const props = "";', "const props = JSON.parse(process.argv[2]);");
+  return `${resCbStr}\n${RESERVE_CB_NAME}();`;
 }
 
 async function cb(d) {
   const res = await new Promise((resolve) => {
     setTimeout(() => {
       resolve(JSON.stringify({ test: "guest" }));
-    }, 100);
+    }, 0);
   });
-  console.log(res);
+  return res;
 }
 syncServer(cb);
