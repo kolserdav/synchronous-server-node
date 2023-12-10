@@ -1,6 +1,9 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use proxy_server::http::{Http, Status, CRLF};
+use proxy_server::{
+    headers::Headers,
+    http::{Http, Status, CRLF},
+};
 use std::{
     io::Write,
     net::{TcpListener, TcpStream},
@@ -12,7 +15,7 @@ use std::{
 };
 
 #[napi]
-fn test_callback<T>(callback: T) -> Result<()>
+fn server<T>(callback: T) -> Result<()>
 where
     T: Fn(String) -> Result<String>,
 {
@@ -24,14 +27,14 @@ where
     T: Fn(String) -> Result<String>,
 {
     let listener = TcpListener::bind(addr)?;
-    println!("listening target on {}", addr);
+    println!("listening on: {}", addr);
     for stream in listener.incoming() {
         let mut client = Http::from(stream?);
 
-        let headers = read_headers(&mut client);
-        println!("{:?}", headers);
+        let h = client.read_headers()?;
+        let heads = Headers::new(h);
 
-        let result = callback("{\"tet\":\"tet\"}".to_string())?;
+        let result = callback(serde_json::to_string(&heads.parsed).unwrap())?;
         let length = result.len();
         let res_heads = format!(
             "Content-Type: application/json{CRLF}Content-Length: {length}{CRLF}Server: sync-server{CRLF}"
@@ -44,10 +47,4 @@ where
         client.flush()?;
     }
     Ok(())
-}
-
-pub fn read_headers(client: &mut Http) -> Result<String> {
-    let mut req_heads = vec![];
-    client.read_headers(&mut req_heads)?;
-    Ok(str::from_utf8(&req_heads).unwrap().to_string())
 }

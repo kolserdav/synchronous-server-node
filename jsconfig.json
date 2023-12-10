@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "noEmit": false,
+        "outDir": "./types",
+        "resolveJsonModule": true,
+        "checkJs": true
+    },
+    "include": ["syncServer.jser.js", "examples"],
+    "exclude": ["node_modules", "types"]
+}

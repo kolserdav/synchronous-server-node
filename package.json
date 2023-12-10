@@ -2,17 +2,22 @@
   "name": "sync-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "syncServer.js",
+  "types": "types",
   "scripts": {
-    "build": "napi build --release",
-    "build:debug": "napi build"
+    "build": "tsc -p jsconfig.json  && napi build --release",
+    "build:debug": "napi build",
+    "dev": "nodemon ./examples/hello-world.js",
+    "start": "node ./examples/hello-world.js",
+    "test": "node ./test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@napi-rs/cli": "^2.17.0",
-    "@types/node": "^20.10.4"
+    "@types/node": "^20.10.4",
+    "typescript": "^5.3.3"
   },
   "napi": {
     "name": "sync-server"

@@ -1,19 +1,35 @@
-// @ts-check
 const { v4 } = require("uuid");
-const { writeFileSync, unlinkSync } = require("fs");
-const { testCallback } = require("./sync-server.node");
+const { writeFileSync } = require("fs");
 const { spawnSync } = require("child_process");
 const path = require("path");
-const pack = require("./package.json");
 const os = require("os");
+const pack = require("./package.json");
+// @ts-ignore
+const { server: _server } = require("./sync-server.node");
+
+/**
+ * @typedef {import("./index").server} Server
+ */
+
+/**
+ * @type {Server}
+ */
+const server = _server;
 
 const RESERVE_CB_NAME = "_sync_server_reserve_cb_name";
+const RESERVE_PROPS_NAME = "_sync_server_reserve_props_name";
+const RESERVE_RES_NAME = "_sync_server_reserve_res_name";
+const RESERVE_USER_CB_NAME = "_sync_server_reserve_user_cb_name";
 
+/**
+ *
+ * @param {(d: string) => any} cb
+ */
 function syncServer(cb) {
   const tmpFilePath = path.resolve(os.tmpdir(), `${pack.name}-${v4()}.js`);
   const data = createStringFunc(cb.toString());
   writeFileSync(tmpFilePath, data);
-  testCallback((d) => {
+  server((d) => {
     const ex = `node ${tmpFilePath}  ${JSON.stringify(d)}`;
     const rr = spawnSync(ex, {
       shell: true,
@@ -38,17 +54,21 @@ function syncServer(cb) {
   });
 }
 
-function createStringFunc(cb) {
-  let cbStr = cb.toString();
+/**
+ *
+ * @param {string} cbStr
+ * @returns
+ */
+function createStringFunc(cbStr) {
   const propM = cbStr.match(/\([a-zA-Z0-9_]*\)/);
   const prop = propM ? propM[0].replace(/[\(\)]+/g, "") : "";
   const body = cbStr.substring(cbStr.indexOf("{") + 1, cbStr.lastIndexOf("}"));
-  cbStr = `async function cb(${prop}) {\n${body}\n}`;
+  cbStr = `async function ${RESERVE_USER_CB_NAME}(${prop}) {\n${body}\n}`;
 
   async function _sync_server_reserve_cb_name() {
-    const props = "";
-    const res = await cb(props);
-    console.log(res);
+    const _sync_server_reserve_props_name = "";
+    const _sync_server_reserve_res_name = "";
+    console.log(_sync_server_reserve_res_name);
   }
   const resCbStr = _sync_server_reserve_cb_name
     .toString()
@@ -56,16 +76,15 @@ function createStringFunc(cb) {
       `async function ${RESERVE_CB_NAME}() {`,
       `async function ${RESERVE_CB_NAME}() {\n\t${cbStr}\n`
     )
-    .replace('const props = "";', "const props = JSON.parse(process.argv[2]);");
+    .replace(
+      `const ${RESERVE_PROPS_NAME} = "";`,
+      `const ${RESERVE_PROPS_NAME} = JSON.parse(process.argv[2]);\n`
+    )
+    .replace(
+      `const ${RESERVE_RES_NAME} = ""`,
+      `const ${RESERVE_RES_NAME} = await ${RESERVE_USER_CB_NAME}(${RESERVE_PROPS_NAME});\n`
+    );
   return `${resCbStr}\n${RESERVE_CB_NAME}();`;
 }
 
-async function cb(d) {
-  const res = await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(JSON.stringify({ test: "guest" }));
-    }, 0);
-  });
-  return res;
-}
-syncServer(cb);
+module.exports = { syncServer };
