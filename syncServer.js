@@ -3,12 +3,16 @@ const { writeFileSync } = require("fs");
 const { spawnSync } = require("child_process");
 const path = require("path");
 const os = require("os");
+const { Worker, isMainThread } = require("node:worker_threads");
 const pack = require("./package.json");
 // @ts-ignore
 const { server: _server } = require("./sync-server.node");
+const { parentPort } = require("worker_threads");
 
 /**
  * @typedef {import("./index").server} Server
+ * @typedef {import("./index").Header} Header
+ * @typedef {import("./index").Request} Request
  */
 
 /**
@@ -26,9 +30,10 @@ const RESERVE_USER_CB_NAME = "_sync_server_reserve_user_cb_name";
  * @param {(d: string) => any} cb
  */
 function syncServer(cb) {
-  const tmpFilePath = path.resolve(os.tmpdir(), `${pack.name}-${v4()}.js`);
+  const tmpFilePath = path.resolve(os.tmpdir(), `${pack.name}_${v4()}.js`);
   const data = createStringFunc(cb.toString());
   writeFileSync(tmpFilePath, data);
+
   server((d) => {
     const ex = `node ${tmpFilePath}  ${JSON.stringify(d)}`;
     const rr = spawnSync(ex, {
@@ -78,7 +83,7 @@ function createStringFunc(cbStr) {
     )
     .replace(
       `const ${RESERVE_PROPS_NAME} = "";`,
-      `const ${RESERVE_PROPS_NAME} = JSON.parse(process.argv[2]);\n`
+      `const ${RESERVE_PROPS_NAME} = JSON.parse(process.argv[2]);\n;`
     )
     .replace(
       `const ${RESERVE_RES_NAME} = ""`,
@@ -87,4 +92,22 @@ function createStringFunc(cbStr) {
   return `${resCbStr}\n${RESERVE_CB_NAME}();`;
 }
 
-module.exports = { syncServer };
+/**
+ *
+ * @param {string} raw
+ * @returns {Request | null}
+ */
+function parseRequest(raw) {
+  /**
+   * @type {Request | null}
+   */
+  let req = null;
+  try {
+    req = JSON.parse(raw);
+  } catch (e) {
+    console.error("Failed to parse request", e);
+  }
+  return req;
+}
+
+module.exports = { syncServer, parseRequest };

@@ -1,21 +1,18 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
 use proxy_server::{
-    headers::Headers,
     http::{Http, Status, CRLF},
+    request::Request,
 };
 use std::{
-    io::Write,
-    net::{TcpListener, TcpStream},
+    io::{ErrorKind, Read, Write},
+    net::{Shutdown, TcpListener},
     str,
-};
-use std::{
-    thread::{sleep, spawn},
     time::Duration,
 };
 
 #[napi]
-fn server<T>(callback: T) -> Result<()>
+pub fn server<T>(callback: T) -> Result<()>
 where
     T: Fn(String) -> Result<String>,
 {
@@ -28,13 +25,16 @@ where
 {
     let listener = TcpListener::bind(addr)?;
     println!("listening on: {}", addr);
-    for stream in listener.incoming() {
-        let mut client = Http::from(stream?);
+    'a: for stream in listener.incoming() {
+        let st = stream?;
+        let mut client = Http::from(st);
 
         let h = client.read_headers()?;
-        let heads = Headers::new(h);
+        let mut req = Request::new(h);
+        let body = client.read_body(&req)?;
+        req.body = client.body_to_string(body)?;
 
-        let result = callback(serde_json::to_string(&heads.parsed).unwrap())?;
+        let result = callback(serde_json::to_string(&req).unwrap())?;
         let length = result.len();
         let res_heads = format!(
             "Content-Type: application/json{CRLF}Content-Length: {length}{CRLF}Server: sync-server{CRLF}"
@@ -43,6 +43,7 @@ where
         client.write(res_heads.as_bytes())?;
         client.set_end_line()?;
         client.write(result.as_bytes())?;
+
         client.set_zero_byte()?;
         client.flush()?;
     }

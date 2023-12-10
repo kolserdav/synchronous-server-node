@@ -1,4 +1,4 @@
-const { syncServer } = require("../syncServer");
+const { syncServer, parseRequest } = require("../syncServer");
 
 syncServer(async (d) => {
   console.log(1, d);

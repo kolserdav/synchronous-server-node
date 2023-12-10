@@ -10,6 +10,6 @@
         "resolveJsonModule": true,
         "checkJs": true
     },
-    "include": ["syncServer.jser.js", "examples"],
+    "include": ["*.js", "examples"],
     "exclude": ["node_modules", "types"]
 }
