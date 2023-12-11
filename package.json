@@ -1,14 +1,14 @@
 {
-  "name": "sync-server",
+  "name": "synchronous-server",
   "version": "1.0.0",
   "description": "",
-  "main": "syncServer.js",
+  "main": "synchronous-server.js",
   "types": "types",
   "scripts": {
-    "build": "tsc -p jsconfig.json  && napi build --release",
-    "build:debug": "napi build",
-    "dev": "nodemon ./examples/hello-world.js",
-    "start": "node ./examples/hello-world.js",
+    "build": "napi build --release && tsc -p jsconfig.json",
+    "build:debug": "napi build && tsc -p jsconfig.json",
+    "dev": "nodemon ./examples/hello-world/index.js",
+    "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js"
   },
   "keywords": [],
@@ -20,7 +20,7 @@
     "typescript": "^5.3.3"
   },
   "napi": {
-    "name": "sync-server"
+    "name": "synchronous-server"
   },
   "dependencies": {
     "uuid": "^9.0.1"

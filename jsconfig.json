@@ -8,7 +8,7 @@
         "noEmit": false,
         "outDir": "./types",
         "resolveJsonModule": true,
-        "checkJs": true
+        "checkJs": true,
     },
     "include": ["*.js", "examples"],
     "exclude": ["node_modules", "types"]
