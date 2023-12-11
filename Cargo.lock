@@ -257,6 +257,7 @@ dependencies = [
  "napi-build",
  "napi-derive",
  "proxy-server",
+ "regex",
  "serde_json",
 ]
 

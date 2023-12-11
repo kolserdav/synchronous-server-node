@@ -7,14 +7,21 @@ export interface Header {
   name: string
   value: string
 }
+export interface Headers {
+  raw: string
+  list: Array<Header>
+}
 /** HTTP request */
 export interface Request {
   url: string
+  host: string
+  peerAddr: string
   protocol: string
   method: string
   contentLength: number
-  headersRaw: string
-  headers: Array<Header>
+  ttl: number
+  headers: Headers
   body: string
+  error: string
 }
 export function server(callback: (arg0: string) => [string, number, string]): void

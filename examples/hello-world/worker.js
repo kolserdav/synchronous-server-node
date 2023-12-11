@@ -9,5 +9,8 @@ const { request, response } = require("../../synchronous-server");
   });
   console.log(req);
 
-  response({ d: "ds" }, { code: 301 });
+  response(
+    { d: "ds" },
+    { code: 200, headers: { Location: "http://example.com" } }
+  );
 })();

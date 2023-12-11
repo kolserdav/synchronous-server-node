@@ -1,6 +1,15 @@
 use napi::bindgen_prelude::*;
 use napi_derive::napi;
-use proxy_server::http::{request::Request, Http, CRLF};
+use proxy_server::{
+    http::{
+        headers::{Header, Headers},
+        request::{Request, Socket},
+        status::Status,
+        Http,
+    },
+    prelude::constants::HTTP_VERSION_DEFAULT,
+};
+use serde_json::{from_str, Value};
 use std::{io::Write, net::TcpListener, str};
 
 #[napi]
@@ -24,6 +33,7 @@ where
             continue;
         }
         let st = st.unwrap();
+
         let mut client = Http::from(st);
 
         let h = client.read_headers();
@@ -33,7 +43,27 @@ where
         }
         let h = h.unwrap();
 
-        let mut req = Request::new(h);
+        let error = client.socket.take_error().unwrap();
+        let error = match error {
+            None => "".to_string(),
+            Some(val) => val.to_string(),
+        };
+
+        let req = Request::new(
+            Socket {
+                host: client.socket.local_addr().unwrap().to_string(),
+                peer_addr: client.socket.peer_addr().unwrap().to_string(),
+                ttl: client.socket.ttl().unwrap(),
+                error,
+            },
+            h,
+        );
+        if let Err(err) = req {
+            println!("Failed to create request {:?}: {:?}", err, &client.socket);
+            continue;
+        }
+        let mut req = req.unwrap();
+
         let body = client.read_body(&req);
         if let Err(err) = body {
             println!("Failed to read body {:?}: {:?}", err, &req);
@@ -55,26 +85,36 @@ where
         }
         let (result, code, headers) = cb_res.unwrap();
 
-        println!("headers {:?}", headers);
+        let heads: Value = from_str(headers.as_str()).unwrap();
+
+        if code == 301 {
+            println!("headers {:?}", heads);
+        }
 
         let length = result.len();
-        let res_heads = format!(
-            "Content-Type: application/json{CRLF}Content-Length: {length}{CRLF}Server: sync-server{CRLF}"
+
+        let status = Status::new(code);
+        let res_heads = Headers::new(
+            format!("{} {} {}", HTTP_VERSION_DEFAULT, status.code, status.name).as_str(),
+            vec![
+                Header {
+                    name: "Content-Type".to_string(),
+                    value: "application/json".to_string(),
+                },
+                Header {
+                    name: "Content-Length".to_string(),
+                    value: length.to_string(),
+                },
+                Header {
+                    name: "Server".to_string(),
+                    value: "synchronous-server".to_string(),
+                },
+            ],
         );
-        let res = client.set_status(code);
-        if let Err(err) = res {
-            println!("Failed to set status code {:?}: {:?}", err, &req);
-            continue;
-        }
-        let res = client.write(res_heads.as_bytes());
+
+        let res = client.write(res_heads.raw.as_bytes());
         if let Err(err) = res {
             println!("Failed to write headers {:?}: {:?}", err, &req);
-            continue;
-        }
-
-        let res = client.set_end_line();
-        if let Err(err) = res {
-            println!("Failed to set end line {:?}: {:?}", err, &req);
             continue;
         }
 
