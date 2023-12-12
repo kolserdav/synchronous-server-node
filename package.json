@@ -1,12 +1,12 @@
 {
   "name": "synchronous-server",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "synchronous-server.js",
   "repository": "https://github.com/kolserdav/synchronous-server.git",
   "types": "types",
   "scripts": {
-    "postcompress": "npm run build:release",
+    "postinstall": "npm run build:release",
     "build": "npm run build:release && tsc -p jsconfig.json",
     "build:debug": "napi build && tsc -p jsconfig.json",
     "build:release": "napi build --release",
@@ -26,7 +26,7 @@
     "name": "synchronous-server"
   },
   "dependencies": {
-    "synchronous-server": "^0.1.0",
+    "synchronous-server": "^0.1.1",
     "uuid": "^9.0.1"
   }
 }
