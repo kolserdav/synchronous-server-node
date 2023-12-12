@@ -1,13 +1,9 @@
 /**
- * HTTP status return 501 if not allowed. Allowed statuses: https://docs.rs/proxy-server/latest/src/proxy_server/http/status.rs.html
- */
-export type Code = number;
-/**
  * Response headers
  */
-export type Headers = Record<string, string>;
+export type HeadersLocal = Record<string, string>;
 export type Server = typeof import("./index").server;
-export type Header = import("./index").Header;
+export type Headers = import("./index").Headers;
 export type Request = import("./index").Request;
 /**
  *
@@ -19,22 +15,18 @@ export function syncServer(workerFilePath: string): void;
  */
 export function request(): Request | null;
 /**
- * HTTP status return 501 if not allowed. Allowed statuses: https://docs.rs/proxy-server/latest/src/proxy_server/http/status.rs.html
- * @typedef {number} Code
- */
-/**
  * Response headers
- * @typedef {Record<string, string>} Headers
+ * @typedef {Record<string, string>} HeadersLocal
  */
 /**
  * Response result to client
  * @param {any} data
  * @param {{
- *  code: Code;
- *  headers?: Headers
+ *  code: number;
+ *  headers?: HeadersLocal
  * }} options
  */
 export function response(data: any, { code, headers }: {
-    code: Code;
-    headers?: Headers;
+    code: number;
+    headers?: HeadersLocal;
 }): void;

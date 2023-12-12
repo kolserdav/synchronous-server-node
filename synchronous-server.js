@@ -4,7 +4,7 @@ const { server: _server } = require("./synchronous-server.node");
 
 /**
  * @typedef {import("./index").server} Server
- * @typedef {import("./index").Header} Header
+ * @typedef {import("./index").Headers} Headers
  * @typedef {import("./index").Request} Request
  */
 
@@ -83,30 +83,39 @@ function request() {
 }
 
 /**
- * HTTP status return 501 if not allowed. Allowed statuses: https://docs.rs/proxy-server/latest/src/proxy_server/http/status.rs.html
- * @typedef {number} Code
- */
-
-/**
  * Response headers
- * @typedef {Record<string, string>} Headers
+ * @typedef {Record<string, string>} HeadersLocal
  */
 
 /**
  * Response result to client
  * @param {any} data
  * @param {{
- *  code: Code;
- *  headers?: Headers
+ *  code: number;
+ *  headers?: HeadersLocal
  * }} options
  */
 function response(data, { code, headers }) {
-  console.log(JSON.stringify(headers || {}));
-  if (!code) {
-    console.warn("Used status code default", 501);
-  }
+  console.log(JSON.stringify(createHeaders(headers)));
   console.log(code || 501);
   console.log(JSON.stringify(data));
+}
+
+/**
+ *
+ * @param {HeadersLocal} oldHeqaders
+ * @returns {Pick<Headers, 'list'>}
+ */
+function createHeaders(oldHeqaders) {
+  /**
+   * @type {Headers}
+   */
+  const newHeaders = { raw: "", list: [] };
+  newHeaders.list = Object.keys(oldHeqaders || {}).map((item) => ({
+    name: item,
+    value: oldHeqaders[item],
+  }));
+  return newHeaders;
 }
 
 module.exports = { syncServer, request, response };
