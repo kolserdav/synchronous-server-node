@@ -9,7 +9,8 @@ readme = "README.md"
 keywords = ["http", "synchronous", "tcp"]
 categories = ["network-programming"]
 repository = "https://github.com/kolserdav/synchronous-server"
-include = ["README.md", "LICENSE", "Cargo.toml", "/src/*.rs", "src/**/*.rs"]
+include = ["README.md", "LICENSE", "Cargo.toml", "/src/*.rs", "src/**/*.rs"]\
+exclude = ["node_modules"]
 rust-version = "1.74"
 
 [lib]
