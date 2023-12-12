@@ -110,17 +110,17 @@ function response(data, options = {}) {
 
 /**
  *
- * @param {HeadersLocal} oldHeqaders
+ * @param {HeadersLocal} oldHeaders
  * @returns {Pick<Headers, 'list'> | undefined}
  */
-function createHeaders(oldHeqaders) {
+function createHeaders(oldHeaders) {
   /**
    * @type {Headers}
    */
   const newHeaders = { raw: "", list: [] };
-  newHeaders.list = Object.keys(oldHeqaders || {}).map((item) => ({
+  newHeaders.list = Object.keys(oldHeaders || {}).map((item) => ({
     name: item,
-    value: oldHeqaders[item],
+    value: oldHeaders[item],
   }));
   return newHeaders;
 }

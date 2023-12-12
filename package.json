@@ -26,7 +26,7 @@
     "name": "synchronous-server"
   },
   "dependencies": {
-    "synchronous-server": "^0.1.2",
+    "synchronous-server": "^0.1.3",
     "uuid": "^9.0.1"
   }
 }
