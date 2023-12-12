@@ -252,8 +252,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "sync-server"
-version = "0.1.0"
+name = "synchronous-server"
+version = "0.1.2"
 dependencies = [
  "napi",
  "napi-build",

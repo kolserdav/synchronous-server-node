@@ -1,7 +1,6 @@
 {
   "name": "synchronous-server",
   "version": "0.1.2",
-  "description": "",
   "main": "synchronous-server.js",
   "repository": "https://github.com/kolserdav/synchronous-server.git",
   "types": "types",
@@ -14,8 +13,9 @@
     "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js"
   },
-  "keywords": [],
-  "author": "",
+  "description": "Low level synchronous server",
+  "keywords": ["http", "synchronous", "tcp"],
+  "author": "Sergey Kolmiller <uyem.ru@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@napi-rs/cli": "^2.17.0",
@@ -26,7 +26,7 @@
     "name": "synchronous-server"
   },
   "dependencies": {
-    "synchronous-server": "^0.1.1",
+    "synchronous-server": "^0.1.2",
     "uuid": "^9.0.1"
   }
 }

@@ -1,7 +1,16 @@
 [package]
-name = "sync-server"
-version = "0.1.0"
+name = "synchronous-server"
+version = "0.1.2"
 edition = "2021"
+description = "Low level synchronous server"
+authors = ["Sergey Kolmiller <uyem.ru@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+keywords = ["http", "synchronous", "tcp"]
+categories = ["network-programming"]
+repository = "https://github.com/kolserdav/synchronous-server"
+include = ["README.md", "LICENSE", "Cargo.toml", "/src/*.rs", "src/**/*.rs"]
+rust-version = "1.74"
 
 [lib]
 crate-type = ["cdylib"]
