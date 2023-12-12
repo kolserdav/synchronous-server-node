@@ -1,8 +1,9 @@
 {
-  "name": "test-feature",
+  "name": "synchronous-server",
   "version": "0.1.3",
-  "description": "",
   "main": "synchronous-server.js",
+  "repository": "https://github.com/kolserdav/synchronous-server-node.git",
+  "types": "types",
   "scripts": {
     "postinstall": "npm run build:release",
     "build": "npm run build:release && tsc -p jsconfig.json",
@@ -12,15 +13,20 @@
     "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js"
   },
-  "napi": {
-    "name": "synchronous-server"
-  },
+  "description": "Low level synchronous server",
+  "keywords": ["http", "synchronous", "tcp"],
+  "author": "Sergey Kolmiller <uyem.ru@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@napi-rs/cli": "^2.17.0",
     "@types/node": "^20.10.4",
     "typescript": "^5.3.3"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "napi": {
+    "name": "synchronous-server"
+  },
+  "dependencies": {
+    "synchronous-server": "^0.1.2",
+    "uuid": "^9.0.1"
+  }
 }
