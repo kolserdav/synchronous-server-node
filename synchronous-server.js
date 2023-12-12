@@ -2,6 +2,8 @@ const { spawnSync } = require("child_process");
 // @ts-ignore
 const { server: _server } = require("./synchronous-server.node");
 
+const HTTP_CODE_DEFAULT = 200;
+
 /**
  * @typedef {import("./index").server} Server
  * @typedef {import("./index").Headers} Headers
@@ -85,26 +87,31 @@ function request() {
 /**
  * Response headers
  * @typedef {Record<string, string>} HeadersLocal
+ * Response options
+ * @typedef {{
+ *  code?: number;
+ *  headers?: HeadersLocal
+ * }} ResponseOptions
  */
 
 /**
  * Response result to client
- * @param {any} data
- * @param {{
- *  code: number;
- *  headers?: HeadersLocal
- * }} options
+ * @template T
+ * @param {T} data
+ * @param {ResponseOptions?} options
  */
-function response(data, { code, headers }) {
+function response(data, options = {}) {
+  const { code, headers } = options;
+
   console.log(JSON.stringify(createHeaders(headers)));
-  console.log(code || 501);
+  console.log(code || HTTP_CODE_DEFAULT);
   console.log(JSON.stringify(data));
 }
 
 /**
  *
  * @param {HeadersLocal} oldHeqaders
- * @returns {Pick<Headers, 'list'>}
+ * @returns {Pick<Headers, 'list'> | undefined}
  */
 function createHeaders(oldHeqaders) {
   /**

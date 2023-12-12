@@ -138,7 +138,9 @@ dependencies = [
 
 [[package]]
 name = "proxy-server"
-version = "0.4.7"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4675b3ef3fb008403132840e9d1754d625f851584ce3be955aa063fa500279fe"
 dependencies = [
  "napi",
  "napi-derive",

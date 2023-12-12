@@ -1,10 +1,11 @@
 {
   "name": "synchronous-server",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "synchronous-server.js",
   "types": "types",
   "scripts": {
+    "postinstall": "npm run build",
     "build": "napi build --release && tsc -p jsconfig.json",
     "build:debug": "napi build && tsc -p jsconfig.json",
     "dev": "nodemon ./examples/hello-world/index.js",

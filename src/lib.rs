@@ -103,7 +103,7 @@ where
             continue;
         }
         req.body = body.unwrap();
-
+        println!("1 {:?}", &req);
         let req_str = serde_json::to_string(&req);
         if let Err(err) = req_str {
             println!(
@@ -160,10 +160,6 @@ where
             ],
         );
 
-        if code == 301 {
-            println!("headers {:?}", heads);
-        }
-
         for h in heads.list {
             let added_header = res_heads.add_header(h.name.as_str(), h.value.as_str());
             if let Err(err) = &added_header {
@@ -171,8 +167,6 @@ where
             }
             res_heads = added_header.unwrap();
         }
-
-        println!("{:?}", &res_heads);
 
         let res = client.write(res_heads.raw.as_bytes());
         if let Err(err) = res {

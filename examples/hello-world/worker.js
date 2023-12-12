@@ -5,9 +5,9 @@ const { request, response } = require("../../synchronous-server");
   const res = await new Promise((resolve) => {
     setTimeout(() => {
       resolve(1);
-    }, 1000);
+    }, 0);
   });
-  console.log(req);
+  console.log(23, req);
 
-  response({ d: "ds" }, { code: 301 });
+  response("true");
 })();

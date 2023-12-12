@@ -1,7 +1,14 @@
 /**
- * Response headers
+ * Response options
  */
 export type HeadersLocal = Record<string, string>;
+/**
+ * Response headers
+ */
+export type ResponseOptions = {
+    code?: number;
+    headers?: HeadersLocal;
+};
 export type Server = typeof import("./index").server;
 export type Headers = import("./index").Headers;
 export type Request = import("./index").Request;
@@ -17,16 +24,16 @@ export function request(): Request | null;
 /**
  * Response headers
  * @typedef {Record<string, string>} HeadersLocal
+ * Response options
+ * @typedef {{
+ *  code?: number;
+ *  headers?: HeadersLocal
+ * }} ResponseOptions
  */
 /**
  * Response result to client
- * @param {any} data
- * @param {{
- *  code: number;
- *  headers?: HeadersLocal
- * }} options
+ * @template T
+ * @param {T} data
+ * @param {ResponseOptions?} options
  */
-export function response(data: any, { code, headers }: {
-    code: number;
-    headers?: HeadersLocal;
-}): void;
+export function response<T>(data: T, options?: ResponseOptions | null): void;
