@@ -1,20 +1,22 @@
 {
   "name": "synchronous-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "synchronous-server.js",
+  "repository": "https://github.com/kolserdav/synchronous-server.git",
   "types": "types",
   "scripts": {
-    "postinstall": "npm run build",
-    "build": "napi build --release && tsc -p jsconfig.json",
+    "postcompress": "npm run build:release",
+    "build": "npm run build:release && tsc -p jsconfig.json",
     "build:debug": "napi build && tsc -p jsconfig.json",
+    "build:release": "napi build --release",
     "dev": "nodemon ./examples/hello-world/index.js",
     "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@napi-rs/cli": "^2.17.0",
     "@types/node": "^20.10.4",
@@ -24,6 +26,7 @@
     "name": "synchronous-server"
   },
   "dependencies": {
+    "synchronous-server": "^0.1.0",
     "uuid": "^9.0.1"
   }
 }
