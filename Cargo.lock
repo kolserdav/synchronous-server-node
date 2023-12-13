@@ -132,9 +132,9 @@ dependencies = [
 
 [[package]]
 name = "proxy-server"
-version = "0.5.2"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a6d029cd84b3347e232e53ef593c8411a6e710d6806294d65d6ea1b824e569ca"
+checksum = "73e38a431e170d95ba5a31f42c9d43abaddaf6b0c78594c02cc3ab19cf546af4"
 dependencies = [
  "napi",
  "napi-derive",
@@ -230,16 +230,16 @@ dependencies = [
 
 [[package]]
 name = "synchronous-server"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e677069314f683ea025fad4e2e35d602f0b17e767d293bdc71fc598d82f191bb"
+checksum = "c20ee9fcd16355375e6bd8a3211b8878101e78ea32395fffadadf8fb4ef292b4"
 dependencies = [
  "proxy-server",
 ]
 
 [[package]]
 name = "synchronous-server-node"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "napi",
  "napi-build",
