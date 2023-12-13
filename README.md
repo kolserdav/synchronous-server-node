@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `synchronous-server` package is a Node.js module that uses Rust crates to allow the Node.js server to run synchronously. The purpose of this package is to provide a synchronously running server-side implementation of Node.js for your specific needs, such as securely modifying a single file by multiple clients.
+The `synchronous-server` package is a Node.js module that uses Rust crates to allow the Node.js server to run synchronously. The purpose of this package is to provide a synchronously running server-side implementation of Node.js for your specific needs, for example, safe modification of the same file by multiple clients when there are asynchronous operations between read and write.
 
 ## Requirements
 
