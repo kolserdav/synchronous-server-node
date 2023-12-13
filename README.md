@@ -1,18 +1,27 @@
 # Synchronous-Server
 
+![License](https://img.shields.io/github/license/kolserdav/synchronous-server-node)
+
 ## Overview
 
 The `synchronous-server` package is a Node.js module that uses Rust crates to allow the Node.js server to run synchronously. The purpose of this package is to provide a synchronously running server-side implementation of Node.js for your specific needs, such as securely modifying a single file by multiple clients.
 
+## Requirements
+
+To use the `synchronous-server` package, you need to ensure the following:
+
+- Node.js is installed on your system
+- Rust is installed on your system
+
 ## Installation
 
-You can install the `synchronous-server` package using npm:
+**Make sure to have Rust and Cargo installed on your system, as this package relies on Rust crates for its functionality.** _The fastest way to install Rust is to use Rustup https://rustup.rs/_
+
+Install the `synchronous-server` package using npm:
 
 ```bash
 npm install synchronous-server
 ```
-
-Make sure to have Rust installed on your system, as this package relies on Rust crates for its functionality.
 
 ## Usage
 
@@ -48,15 +57,6 @@ const { request, response } = require("synchronous-server");
   response(res);
 })();
 ```
-
-Replace `PORT` with the port number on which you want the synchronous server to listen.
-
-## Requirements
-
-To use the `synchronous-server` package, you need to ensure the following:
-
-- Node.js is installed on your system
-- Rust is installed on your system
 
 ## API Reference
 

@@ -9,6 +9,7 @@
         "outDir": "./types",
         "resolveJsonModule": true,
         "checkJs": true,
+        "strictNullChecks": true
     },
     "include": ["*.js", "examples"],
     "exclude": ["node_modules", "types"]

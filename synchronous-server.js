@@ -23,7 +23,11 @@ const server = _server;
  */
 function startServer(port, workerFilePath) {
   server(port, (d) => {
-    const ex = `node ${workerFilePath}  ${JSON.stringify(d)}`;
+    /**
+     * @type {Headers}
+     */
+    let headers = { raw: "", list: [] };
+    const ex = `node ${workerFilePath}  ${JSON.stringify(JSON.stringify(d))}`;
     const rr = spawnSync(ex, {
       shell: true,
     });
@@ -36,7 +40,7 @@ function startServer(port, workerFilePath) {
           workerFilePath,
         }),
         500,
-        JSON.stringify({}),
+        headers,
       ];
     }
     if (rr.stderr) {
@@ -60,23 +64,29 @@ function startServer(port, workerFilePath) {
       console.log(consoleV.join("\n"));
     }
 
+    try {
+      headers = JSON.parse(resA[resA.length - 3]);
+    } catch (err) {
+      console.error("Failed to parse headers", err);
+    }
+
     return [
       resA[resA.length - 1],
       parseInt(resA[resA.length - 2], 10),
-      resA[resA.length - 3],
+      headers,
     ];
   });
 }
 
 /**
- * @returns {Request | null}
+ * @returns {Request}
  */
 function request() {
   const raw = process.argv[2];
   /**
-   * @type {Request | null}
+   * @type {any}
    */
-  let req = null;
+  let req = {};
   try {
     req = JSON.parse(raw);
   } catch (e) {
@@ -99,7 +109,7 @@ function request() {
  * Response result to client
  * @template T
  * @param {T} data
- * @param {ResponseOptions?} options
+ * @param {ResponseOptions} options
  */
 function response(data, options = {}) {
   const { code, headers } = options;
@@ -111,15 +121,19 @@ function response(data, options = {}) {
 
 /**
  *
- * @param {HeadersLocal} oldHeaders
- * @returns {Pick<Headers, 'list'> | undefined}
+ * @param {HeadersLocal | undefined} oldHeaders
+ * @returns {Pick<Headers, 'list'>}
  */
 function createHeaders(oldHeaders) {
   /**
    * @type {Headers}
    */
   const newHeaders = { raw: "", list: [] };
-  newHeaders.list = Object.keys(oldHeaders || {}).map((item) => ({
+  if (!oldHeaders) {
+    return newHeaders;
+  }
+
+  newHeaders.list = Object.keys(oldHeaders).map((item) => ({
     name: item,
     value: oldHeaders[item],
   }));
