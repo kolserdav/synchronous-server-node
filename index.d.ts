@@ -26,4 +26,4 @@ export interface Request {
   body: string
   error: string
 }
-export function server(callback: (arg0: string) => [string, number, string]): void
+export function server(port: number, callback: (arg0: string) => [string, number, string]): void

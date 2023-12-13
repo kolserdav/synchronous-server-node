@@ -1,4 +1,7 @@
 const path = require("path");
-const { syncServer } = require("../../synchronous-server");
+const { startServer } = require("../../synchronous-server");
 
-syncServer(path.resolve(__dirname, "worker.js"));
+// Create an abs path to worker.js file
+const workerPath = path.resolve(__dirname, "worker.js");
+
+startServer(4001, workerPath);

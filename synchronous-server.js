@@ -18,10 +18,11 @@ const server = _server;
 
 /**
  *
+ * @param {number} port
  * @param {string} workerFilePath
  */
-function syncServer(workerFilePath) {
-  server((d) => {
+function startServer(port, workerFilePath) {
+  server(port, (d) => {
     const ex = `node ${workerFilePath}  ${JSON.stringify(d)}`;
     const rr = spawnSync(ex, {
       shell: true,
@@ -125,4 +126,4 @@ function createHeaders(oldHeaders) {
   return newHeaders;
 }
 
-module.exports = { syncServer, request, response };
+module.exports = { startServer, request, response };

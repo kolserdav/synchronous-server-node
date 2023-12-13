@@ -2,12 +2,12 @@ const { request, response } = require("../../synchronous-server");
 
 (async () => {
   const req = request();
+  console.log(`method: ${req.method}, url: ${req.url}`);
   const res = await new Promise((resolve) => {
     setTimeout(() => {
-      resolve(1);
+      resolve({ hello: "world", body: req.body });
     }, 0);
   });
-  console.log(23, req);
 
-  response("true");
+  response(res);
 })();

@@ -14,9 +14,10 @@ export type Headers = import("./index").Headers;
 export type Request = import("./index").Request;
 /**
  *
+ * @param {number} port
  * @param {string} workerFilePath
  */
-export function syncServer(workerFilePath: string): void;
+export function startServer(port: number, workerFilePath: string): void;
 /**
  * @returns {Request | null}
  */

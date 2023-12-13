@@ -1,9 +1,11 @@
 # Synchronous-Server
 
 ## Overview
-The `synchronous-server` package is a Node.js module that leverages Rust crates to enable the possibility of running a Node.js server synchronously. This package aims to provide a synchronously executed server implementation for Node.js, utilizing Rust's concurrency and performance capabilities.
+
+The `synchronous-server` package is a Node.js module that uses Rust crates to allow the Node.js server to run synchronously. The purpose of this package is to provide a synchronously running server-side implementation of Node.js for your specific needs, such as securely modifying a single file by multiple clients.
 
 ## Installation
+
 You can install the `synchronous-server` package using npm:
 
 ```bash
@@ -13,60 +15,75 @@ npm install synchronous-server
 Make sure to have Rust installed on your system, as this package relies on Rust crates for its functionality.
 
 ## Usage
+
 After installing the package, you can use it in your Node.js application as follows:
 
 ```javascript
-const synchronousServer = require('synchronous-server');
+const path = require("path");
+const { startServer } = require("synchronous-server");
 
-// Start the synchronous server
-synchronousServer.startServer(PORT);
+// Create an abs path to worker.js file
+const workerPath = path.resolve(__dirname, "worker.js");
+
+startServer(4001, workerPath);
+```
+
+Create file `worker.js` as follows:
+
+```javascript
+const { request, response } = require("synchronous-server");
+
+// Wrap to async to use await
+(async () => {
+  // Get request
+  const req = request();
+  console.log(`method: ${req.method}, url: ${req.url}`);
+  // An asynchronous operation will be performed synchronously
+  const res = await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ hello: "world", body: req.body });
+    }, 0);
+  });
+  // Send response
+  response(res);
+})();
 ```
 
 Replace `PORT` with the port number on which you want the synchronous server to listen.
 
 ## Requirements
+
 To use the `synchronous-server` package, you need to ensure the following:
 
 - Node.js is installed on your system
 - Rust is installed on your system
 
 ## API Reference
-### `startServer(port: number)`
+
+### `startServer(port: number, workerFilePath: string)`
+
 This function starts the synchronous server on the specified port.
 
 - `port`: The port number on which the server should listen.
-
-## Example
-```javascript
-const synchronousServer = require('synchronous-server');
-
-const PORT = 3000;
-
-// Start the synchronous server
-synchronousServer.startServer(PORT);
-console.log(`Synchronous server running on port ${PORT}`);
-```
+- `workerFilePath`: The absolute path to the request handler file.
 
 ## License
+
 This package is distributed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 
 ## Contributions
-Contributions to the `synchronous-server` package are welcome. Feel free to submit issues or pull requests on the [GitHub repository](https://github.com/your-username/synchronous-server).
 
-## Credits
-The `synchronous-server` package is developed and maintained by [Your Name]. We would like to thank the Rust community for the excellent crates that make this functionality possible.
+Contributions to the `synchronous-server` package are welcome. Feel free to submit issues or pull requests on the [GitHub repository](https://github.com/kolserdav/synchronous-server-node).
 
 ## Support
-For any questions or support with the `synchronous-server` package, please open an issue on the [GitHub repository](https://github.com/your-username/synchronous-server).
+
+For any questions or support with the `synchronous-server` package, please open an issue on the [GitHub repository](https://github.com/kolserdav/synchronous-server-node).
 
 ## Roadmap
+
 - Support for advanced configuration options
 - Performance optimization
-- Integration with additional Rust functionalities
 
 ## Versioning
+
 This package follows the Semantic Versioning (SemVer) scheme. See the [CHANGELOG](CHANGELOG.md) for release history.
-
----
-
-With this `readme.md` file, users can understand the purpose of the `synchronous-server` package, how to install and use it, its requirements, and where to find more information, support, and how to contribute. The `readme.md` also includes sections for license, credits, support, roadmap, and versioning, providing a comprehensive guide for users and potential contributors.
