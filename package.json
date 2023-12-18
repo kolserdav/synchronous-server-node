@@ -1,13 +1,14 @@
 {
   "name": "synchronous-server",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "synchronous-server.js",
   "repository": "https://github.com/kolserdav/synchronous-server-node.git",
-  "types": "types",
+  "types": "types/synchronous-server.d.ts",
   "scripts": {
     "postinstall": "npm run build:release",
-    "build": "npm run build:release && tsc -p jsconfig.json",
-    "build:debug": "napi build && tsc -p jsconfig.json",
+    "build:ts": "tsc -p jsconfig.json",
+    "build": "npm run build:release && npm run build:ts",
+    "build:debug": "napi build && npm run build:ts",
     "build:release": "napi build --release",
     "dev": "nodemon ./examples/hello-world/index.js",
     "start": "node ./examples/hello-world/index.js",

@@ -11,6 +11,6 @@
         "checkJs": true,
         "strictNullChecks": true
     },
-    "include": ["*.js", "examples"],
+    "include": ["*.js", "*.d.ts", "examples"],
     "exclude": ["node_modules", "types"]
 }
