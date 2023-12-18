@@ -46,7 +46,7 @@ function startServer(port, workerFilePath) {
     if (rr.stderr) {
       const warnT = rr.stderr.toString();
       if (!/^\s+$/.test(warnT) && warnT !== "") {
-        console.warn(warnT);
+        console.warn("Worker error", warnT);
       }
     }
     const resA = resS.split("\n").filter((item) => item !== "");
