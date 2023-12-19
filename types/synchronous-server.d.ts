@@ -1,3 +1,6 @@
+export type Request<T> = Omit<RequestHTTP, 'body'> & {
+    body: T | null;
+};
 /**
  * Response options
  */
@@ -11,7 +14,7 @@ export type ResponseOptions = {
 };
 export type Server = typeof import("./index").server;
 export type Headers = import("./index").Headers;
-export type Request = import("./index").Request;
+export type RequestHTTP = import("./index").Request;
 /**
  *
  * @param {number} port
@@ -19,9 +22,14 @@ export type Request = import("./index").Request;
  */
 export function startServer(port: number, workerFilePath: string): void;
 /**
- * @returns {Request}
+ * @template T
+ * @typedef {Omit<RequestHTTP, 'body'> & {body: T | null}} Request
  */
-export function request(): Request;
+/**
+ * @template T
+ * @returns {Request<T>}
+ */
+export function request<T>(): Request<T>;
 /**
  * Response headers
  * @typedef {Record<string, string>} HeadersLocal

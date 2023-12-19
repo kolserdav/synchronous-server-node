@@ -7,7 +7,7 @@ const HTTP_CODE_DEFAULT = 200;
 /**
  * @typedef {import("./index").server} Server
  * @typedef {import("./index").Headers} Headers
- * @typedef {import("./index").Request} Request
+ * @typedef {import("./index").Request} RequestHTTP
  */
 
 /**
@@ -79,7 +79,13 @@ function startServer(port, workerFilePath) {
 }
 
 /**
- * @returns {Request}
+ * @template T
+ * @typedef {Omit<RequestHTTP, 'body'> & {body: T | null}} Request
+ */
+
+/**
+ * @template T
+ * @returns {Request<T>}
  */
 function request() {
   const raw = process.argv[2];
@@ -92,6 +98,17 @@ function request() {
   } catch (e) {
     console.error("Failed to parse request", e);
   }
+
+  if (req.body !== "") {
+    let body = null;
+    try {
+      body = JSON.parse(req.body);
+    } catch (e) {
+      console.error("Failed to parse request body", e);
+    }
+    req.body = body;
+  }
+
   return req;
 }
 
