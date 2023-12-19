@@ -83,7 +83,7 @@ function startServer(port, workerFilePath) {
 
 /**
  * @template Q,B
- * @typedef {Omit<RequestHTTP, 'body' | 'query'> & {body: B, query: Q}} Request
+ * @typedef {Omit<RequestHTTP, 'body' | 'query'> & {body: B | undefined, query: Q | undefined}} Request
  */
 
 /**
@@ -111,6 +111,8 @@ function request() {
       // console.error("Failed to parse request body", e);
     }
     req.body = body;
+  } else {
+    req.body = undefined;
   }
 
   if (req.query !== "") {
@@ -135,6 +137,8 @@ function request() {
         query[key] = castingTypes(value);
       });
     req.query = query;
+  } else {
+    req.query = undefined;
   }
 
   return req;
