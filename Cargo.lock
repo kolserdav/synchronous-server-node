@@ -230,9 +230,7 @@ dependencies = [
 
 [[package]]
 name = "synchronous-server"
-version = "0.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c20ee9fcd16355375e6bd8a3211b8878101e78ea32395fffadadf8fb4ef292b4"
+version = "0.1.7"
 dependencies = [
  "proxy-server",
 ]

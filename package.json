@@ -1,6 +1,6 @@
 {
   "name": "synchronous-server",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "main": "synchronous-server.js",
   "repository": "https://github.com/kolserdav/synchronous-server-node.git",
   "types": "types/synchronous-server.d.ts",
