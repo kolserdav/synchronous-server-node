@@ -1,5 +1,6 @@
-export type Request<T> = Omit<RequestHTTP, 'body'> & {
-    body: T | null;
+export type Request<Q, B> = Omit<RequestHTTP, 'body' | 'query'> & {
+    body: B;
+    query: Q;
 };
 /**
  * Response options
@@ -22,14 +23,14 @@ export type RequestHTTP = import("./index").Request;
  */
 export function startServer(port: number, workerFilePath: string): void;
 /**
- * @template T
- * @typedef {Omit<RequestHTTP, 'body'> & {body: T | null}} Request
+ * @template Q,B
+ * @typedef {Omit<RequestHTTP, 'body' | 'query'> & {body: B, query: Q}} Request
  */
 /**
- * @template T
- * @returns {Request<T>}
+ * @template Q,B
+ * @returns {Request<Q, B>}
  */
-export function request<T>(): Request<T>;
+export function request<Q, B>(): Request<Q, B>;
 /**
  * Response headers
  * @typedef {Record<string, string>} HeadersLocal

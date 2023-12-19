@@ -24,6 +24,8 @@ export interface Request {
   ttl: number
   headers: Headers
   body: string
+  query: string
   error: string
+  chunked: boolean
 }
 export function server(port: number, callback: (arg0: Request) => [string, number, Headers]): void

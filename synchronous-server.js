@@ -3,6 +3,7 @@ const { spawnSync } = require("child_process");
 const { server: _server } = require("./synchronous-server.node");
 
 const HTTP_CODE_DEFAULT = 200;
+const AMPRERSAND_REPLACE_SYMBOL = "AMPRERSAND_REPLACE_SYMBOL";
 
 /**
  * @typedef {import("./index").server} Server
@@ -27,7 +28,9 @@ function startServer(port, workerFilePath) {
      * @type {Headers}
      */
     let headers = { raw: "", list: [] };
-    const ex = `node ${workerFilePath}  ${JSON.stringify(JSON.stringify(d))}`;
+    const ex = `node ${workerFilePath}  ${JSON.stringify(
+      JSON.stringify(d)
+    ).replaceAll("&", AMPRERSAND_REPLACE_SYMBOL)}`;
     const rr = spawnSync(ex, {
       shell: true,
     });
@@ -43,12 +46,7 @@ function startServer(port, workerFilePath) {
         headers,
       ];
     }
-    if (rr.stderr) {
-      const warnT = rr.stderr.toString();
-      if (!/^\s+$/.test(warnT) && warnT !== "") {
-        console.warn("Worker error", warnT);
-      }
-    }
+
     const resA = resS.split("\n").filter((item) => item !== "");
 
     const consoleV = resA
@@ -63,7 +61,12 @@ function startServer(port, workerFilePath) {
     if (consoleV.length !== 0) {
       console.log(consoleV.join("\n"));
     }
-
+    if (rr.stderr) {
+      const warnT = rr.stderr.toString();
+      if (!/^\s+$/.test(warnT) && warnT !== "") {
+        console.warn("Worker error", warnT);
+      }
+    }
     try {
       headers = JSON.parse(resA[resA.length - 3]);
     } catch (err) {
@@ -79,16 +82,17 @@ function startServer(port, workerFilePath) {
 }
 
 /**
- * @template T
- * @typedef {Omit<RequestHTTP, 'body'> & {body: T | null}} Request
+ * @template Q,B
+ * @typedef {Omit<RequestHTTP, 'body' | 'query'> & {body: B, query: Q}} Request
  */
 
 /**
- * @template T
- * @returns {Request<T>}
+ * @template Q,B
+ * @returns {Request<Q, B>}
  */
 function request() {
-  const raw = process.argv[2];
+  const raw = process.argv[2].replaceAll(AMPRERSAND_REPLACE_SYMBOL, "&");
+
   /**
    * @type {any}
    */
@@ -100,16 +104,54 @@ function request() {
   }
 
   if (req.body !== "") {
-    let body = null;
+    let body = castingTypes(req.body);
     try {
       body = JSON.parse(req.body);
     } catch (e) {
-      console.error("Failed to parse request body", e);
+      // console.error("Failed to parse request body", e);
     }
     req.body = body;
   }
 
+  if (req.query !== "") {
+    let query = {};
+    const queryStr = req.query.replace("?", "");
+    queryStr
+      .split("&")
+      .filter((item) => item !== "")
+      .forEach((item) => {
+        const keyM = item.match(/^[a-zA-Z0-9\-_\.]+=/);
+        if (!keyM) {
+          return;
+        }
+        const key = keyM[0].replace("=", "");
+        const valueM = item.match(/=[a-zA-Z0-9\-_\.]+$/);
+        if (!valueM) {
+          query[key] = "";
+          return;
+        }
+        const value = valueM[0].replace("=", "");
+
+        query[key] = castingTypes(value);
+      });
+    req.query = query;
+  }
+
   return req;
+}
+
+/**
+ * @param {string} value
+ * @returns
+ */
+function castingTypes(value) {
+  const floatVal = parseFloat(value);
+
+  return value === "true" || value === "false"
+    ? value === "true"
+    : !Number.isNaN(floatVal)
+    ? floatVal
+    : value;
 }
 
 /**
