@@ -1,6 +1,6 @@
 const { spawnSync } = require("child_process");
 // @ts-ignore
-const { server: _server } = require("./synchronous-server.node");
+const { server: _server } = require("./synchronous-server-win.node");
 
 const HTTP_CODE_DEFAULT = 200;
 const AMPRERSAND_REPLACE_SYMBOL = "AMPRERSAND_REPLACE_SYMBOL";

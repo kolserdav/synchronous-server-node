@@ -9,10 +9,10 @@ crate-type = ["cdylib"]
 name = "synchronous_server_node"
 
 [dependencies]
-napi = "2"
+napi = { version = "2", default-features = false, features = ["napi4"] }
 napi-derive = "2"
 #synchronous-server =  { path = "../synchronous-server", features = ["napi"] }
 synchronous-server =  { version = "0.1.11", features = ["napi"] }
 
 [build-dependencies]
-napi-build = "1"
+napi-build = "2"
