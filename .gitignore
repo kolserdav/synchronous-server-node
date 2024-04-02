@@ -1,3 +1,4 @@
 /target
 /node_modules
 /synchronous-server.node
+/synchronous-server.linux-x64-gnu.node

@@ -9,7 +9,7 @@
     "build:ts": "tsc -p jsconfig.json && npm run script:copy-dts",
     "build": "npm run build:release",
     "build:debug": "napi build && npm run build:ts",
-    "build:release": "napi build --release",
+    "build:release": "napi build --platform --release",
     "dev": "nodemon ./examples/hello-world/index.js",
     "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js",
