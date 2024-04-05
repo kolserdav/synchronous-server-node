@@ -13,13 +13,7 @@
     "dev": "nodemon ./examples/hello-world/index.js",
     "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js",
-    "script:copy-dts": "node ./scripts/copy-dts.js",
-    "build:aarch64-apple-darwin": "napi build --release --platform --target aarch64-apple-darwin",
-    "build:aarch64-unknown-linux-gnu": "napi build --release --platform --target aarch64-unknown-linux-gnu",
-    "build:aarch64-pc-windows-msvc": "napi build --release --platform --target aarch64-pc-windows-msvc",
-    "build:x86_64-unknown-linux-gnu": "napi build --release --platform --target x86_64-unknown-linux-gnu",
-    "build:x86_64-pc-windows-msvc": "napi build --release --platform --target x86_64-pc-windows-msvc",
-    "build:x86_64-apple-darwin": "napi build --release --platform --target x86_64-apple-darwin"
+    "script:copy-dts": "node ./scripts/copy-dts.js"
   },
   "description": "Low level synchronous server",
   "keywords": [
@@ -34,17 +28,7 @@
     "typescript": "^5.3.3"
   },
   "napi": {
-    "name": "synchronous-server",
-    "triples": {
-      "additional": [
-        "aarch64-apple-darwin",
-        "aarch64-unknown-linux-gnu",
-        "aarch64-pc-windows-msvc",
-        "x86_64-unknown-linux-gnu",
-        "x86_64-pc-windows-msvc",
-        "x86_64-apple-darwin"
-      ]
-    }
+    "name": "synchronous-server"
   },
   "dependencies": {
     "@napi-rs/cli": "^2.17.0",
