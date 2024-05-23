@@ -33,6 +33,7 @@ function startServer(port, workerFilePath) {
     ).replaceAll("&", AMPRERSAND_REPLACE_SYMBOL)}`;
     const rr = spawnSync(ex, {
       shell: true,
+      env: process.env,
     });
     const resS = rr.stdout.toString();
     if (rr.error) {
