@@ -5,11 +5,7 @@
   "repository": "https://github.com/kolserdav/synchronous-server-node.git",
   "types": "types/synchronous-server.d.ts",
   "scripts": {
-    "postinstall": "npm run build:release",
     "build:ts": "tsc -p jsconfig.json && npm run script:copy-dts",
-    "build": "npm run build:release",
-    "build:debug": "napi build && npm run build:ts",
-    "build:release": "napi build --release",
     "dev": "nodemon ./examples/hello-world/index.js",
     "start": "node ./examples/hello-world/index.js",
     "test": "node ./test.js",
@@ -25,14 +21,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.10.4",
+    "nodemon": "^3.1.3",
     "typescript": "^5.3.3"
   },
-  "napi": {
-    "name": "synchronous-server"
-  },
   "dependencies": {
-    "@napi-rs/cli": "^2.17.0",
-    "synchronous-server": "^0.1.3",
     "uuid": "^9.0.1"
   }
 }

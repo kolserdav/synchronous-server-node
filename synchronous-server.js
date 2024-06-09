@@ -1,6 +1,6 @@
+const { match } = require("assert");
 const { spawnSync } = require("child_process");
-// @ts-ignore
-const { server: _server } = require("./synchronous-server.node");
+const { createServer } = require("http");
 
 const HTTP_CODE_DEFAULT = 200;
 const AMPRERSAND_REPLACE_SYMBOL = "AMPRERSAND_REPLACE_SYMBOL";
@@ -12,24 +12,55 @@ const AMPRERSAND_REPLACE_SYMBOL = "AMPRERSAND_REPLACE_SYMBOL";
  */
 
 /**
- * @private
- * @type {Server}
- */
-const server = _server;
-
-/**
  *
  * @param {number} port
  * @param {string} workerFilePath
+ * @param {() => void} cb
  */
-function startServer(port, workerFilePath) {
-  server(port, (d) => {
+function startServer(
+  port,
+  workerFilePath,
+  cb = () => {
+    console.info(`listen: ${port}`);
+  }
+) {
+  const server = createServer(async (req, res) => {
+    const _body = await new Promise((resolve) => {
+      let _body = "";
+      req.on("readable", function () {
+        const d = req.read();
+        if (d) {
+          _body += d;
+        }
+      });
+      req.on("end", function () {
+        resolve(_body);
+      });
+    });
+    const { method, url, headers } = req;
+
     /**
-     * @type {Headers}
+     * @type {any}
      */
-    let headers = { raw: "", list: [] };
+    let body = _body;
+    if (headers["content-type"] === "application/json") {
+      try {
+        body = JSON.parse(_body);
+      } catch (e) {
+        console.error("Failed to parse body", e);
+        res.writeHead(200);
+        res.end(resA[resA.length - 1]);
+      }
+    }
+
+    const queryM = url?.match(/\?.+/);
+    let query = "";
+    if (queryM) {
+      query = queryM[0];
+    }
+
     const ex = `node ${workerFilePath}  ${JSON.stringify(
-      JSON.stringify(d)
+      JSON.stringify({ body, query, method, url, headers })
     ).replaceAll("&", AMPRERSAND_REPLACE_SYMBOL)}`;
     const rr = spawnSync(ex, {
       shell: true,
@@ -38,14 +69,8 @@ function startServer(port, workerFilePath) {
     const resS = rr.stdout.toString();
     if (rr.error) {
       console.error(rr.error);
-      return [
-        JSON.stringify({
-          error: "Failed to execute callback",
-          workerFilePath,
-        }),
-        500,
-        headers,
-      ];
+      res.writeHead(500);
+      res.end(rr.error.message);
     }
 
     const resA = resS.split("\n").filter((item) => item !== "");
@@ -68,18 +93,12 @@ function startServer(port, workerFilePath) {
         console.warn("Worker error", warnT);
       }
     }
-    try {
-      headers = JSON.parse(resA[resA.length - 3]);
-    } catch (err) {
-      console.error("Failed to parse headers", err);
-    }
 
-    return [
-      resA[resA.length - 1],
-      parseInt(resA[resA.length - 2], 10),
-      headers,
-    ];
+    res.writeHead(200);
+    res.end(resA[resA.length - 1]);
   });
+
+  server.listen(port, cb);
 }
 
 /**
@@ -103,7 +122,6 @@ function request() {
   } catch (e) {
     console.error("Failed to parse request", e);
   }
-
   if (req.body !== "") {
     let body = castingTypes(req.body);
     try {
@@ -204,4 +222,4 @@ function createHeaders(oldHeaders) {
   return newHeaders;
 }
 
-module.exports = { startServer, request, response };
+module.exports = { request, response, startServer };
