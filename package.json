@@ -1,15 +1,14 @@
 {
   "name": "synchronous-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "synchronous-server.js",
   "repository": "https://github.com/kolserdav/synchronous-server-node.git",
   "types": "types/synchronous-server.d.ts",
   "scripts": {
-    "build:ts": "tsc -p jsconfig.json && npm run script:copy-dts",
+    "build": "tsc -p jsconfig.json",
     "dev": "nodemon ./examples/hello-world/index.js",
     "start": "node ./examples/hello-world/index.js",
-    "test": "node ./test.js",
-    "script:copy-dts": "node ./scripts/copy-dts.js"
+    "test": "node ./test.js"
   },
   "description": "Low level synchronous server",
   "keywords": [

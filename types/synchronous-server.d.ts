@@ -1,6 +1,13 @@
+export type RequestHTTP = {
+    url: string;
+    query: Record<string, string>;
+    body: any;
+    headers: Record<string, string>;
+    method: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'OPTION';
+};
 export type Request<Q, B> = Omit<RequestHTTP, 'body' | 'query'> & {
-    body: B;
-    query: Q;
+    body: B | undefined;
+    query: Q | undefined;
 };
 /**
  * Response options
@@ -13,18 +20,9 @@ export type ResponseOptions = {
     code?: number;
     headers?: HeadersLocal;
 };
-export type Server = typeof import("./index").server;
-export type Headers = import("./index").Headers;
-export type RequestHTTP = import("./index").Request;
-/**
- *
- * @param {number} port
- * @param {string} workerFilePath
- */
-export function startServer(port: number, workerFilePath: string): void;
 /**
  * @template Q,B
- * @typedef {Omit<RequestHTTP, 'body' | 'query'> & {body: B, query: Q}} Request
+ * @typedef {Omit<RequestHTTP, 'body' | 'query'> & {body: B | undefined, query: Q | undefined}} Request
  */
 /**
  * @template Q,B
@@ -47,3 +45,24 @@ export function request<Q, B>(): Request<Q, B>;
  * @param {ResponseOptions} options
  */
 export function response<T>(data: T, options?: ResponseOptions): void;
+/**
+ * @typedef {{
+ *  url: string;
+ *  query: Record<string, string>
+ *  body: any;
+ *  headers: Record<string, string>
+ *  method: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'OPTION'
+ * }} RequestHTTP
+ */
+/**
+ *
+ * @param {{
+ *  port: number;
+ *  workerPath: string;
+ * }} param0
+ * @param {() => void} cb
+ */
+export function startServer({ port, workerPath }: {
+    port: number;
+    workerPath: string;
+}, cb?: () => void): void;
