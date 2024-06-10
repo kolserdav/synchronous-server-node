@@ -6,20 +6,25 @@ const HTTP_CODE_DEFAULT = 200;
 const AMPRERSAND_REPLACE_SYMBOL = "AMPRERSAND_REPLACE_SYMBOL";
 
 /**
- * @typedef {import("./index").server} Server
- * @typedef {import("./index").Headers} Headers
- * @typedef {import("./index").Request} RequestHTTP
+ * @typedef {{
+ *  url: string;
+ *  query: Record<string, string>
+ *  body: any;
+ *  headers: Record<string, string>
+ *  method: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'OPTION'
+ * }} RequestHTTP
  */
 
 /**
  *
- * @param {number} port
- * @param {string} workerFilePath
+ * @param {{
+ *  port: number;
+ *  workerPath: string;
+ * }} param0
  * @param {() => void} cb
  */
 function startServer(
-  port,
-  workerFilePath,
+  { port, workerPath },
   cb = () => {
     console.info(`listen: ${port}`);
   }
@@ -47,9 +52,10 @@ function startServer(
       try {
         body = JSON.parse(_body);
       } catch (e) {
-        console.error("Failed to parse body", e);
-        res.writeHead(200);
-        res.end(resA[resA.length - 1]);
+        const err = "Failed to parse body";
+        console.error(err, e);
+        res.writeHead(500);
+        res.end(err);
       }
     }
 
@@ -59,7 +65,7 @@ function startServer(
       query = queryM[0];
     }
 
-    const ex = `node ${workerFilePath}  ${JSON.stringify(
+    const ex = `node ${workerPath}  ${JSON.stringify(
       JSON.stringify({ body, query, method, url, headers })
     ).replaceAll("&", AMPRERSAND_REPLACE_SYMBOL)}`;
     const rr = spawnSync(ex, {
@@ -196,30 +202,9 @@ function castingTypes(value) {
 function response(data, options = {}) {
   const { code, headers } = options;
 
-  console.log(JSON.stringify(createHeaders(headers)));
+  console.log(JSON.stringify(headers));
   console.log(code || HTTP_CODE_DEFAULT);
   console.log(JSON.stringify(data));
-}
-
-/**
- *
- * @param {HeadersLocal | undefined} oldHeaders
- * @returns {Pick<Headers, 'list'>}
- */
-function createHeaders(oldHeaders) {
-  /**
-   * @type {Headers}
-   */
-  const newHeaders = { raw: "", list: [] };
-  if (!oldHeaders) {
-    return newHeaders;
-  }
-
-  newHeaders.list = Object.keys(oldHeaders).map((item) => ({
-    name: item,
-    value: oldHeaders[item],
-  }));
-  return newHeaders;
 }
 
 module.exports = { request, response, startServer };

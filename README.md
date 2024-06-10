@@ -11,11 +11,8 @@ The `synchronous-server` package is a Node.js module that uses Rust crates to al
 To use the `synchronous-server` package, you need to ensure the following:
 
 - Node.js is installed on your system
-- Rust is installed on your system
 
 ## Installation
-
-**Make sure to have Rust and Cargo installed on your system, as this package relies on Rust crates for its functionality.** _The fastest way to install Rust is to use Rustup https://rustup.rs/_
 
 Install the `synchronous-server` package using npm:
 
@@ -34,7 +31,10 @@ const { startServer } = require("synchronous-server");
 // Create an abs path to worker.js file
 const workerPath = path.resolve(__dirname, "worker.js");
 
-startServer(4001, workerPath);
+const port = 4001;
+startServer({ workerPath, port }, () => {
+  console.log("Listen:", port);
+});
 ```
 
 Create file `worker.js` as follows:
@@ -60,12 +60,12 @@ const { request, response } = require("synchronous-server");
 
 ## API Reference
 
-### `startServer(port: number, workerFilePath: string)`
+### `startServer({port: number, workerFilePath: string}, () => void)`
 
 This function starts the synchronous server on the specified port.
 
 - `port`: The port number on which the server should listen.
-- `workerFilePath`: The absolute path to the request handler file.
+- `workerPath`: The absolute path to the request handler file.
 
 ## License
 
